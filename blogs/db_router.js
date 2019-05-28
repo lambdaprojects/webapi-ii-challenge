@@ -49,7 +49,12 @@ router.post("/", async (req, res) => {
     }
   } catch (error) {
     console.log(error);
-    res.status(500).json({ ErrorMessage: "Error adding blog" });
+    res
+      .status(500)
+      .json({
+        ErrorMessage:
+          "There was an error while saving the posts to the database"
+      });
   }
 });
 
