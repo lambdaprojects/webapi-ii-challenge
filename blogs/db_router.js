@@ -74,11 +74,11 @@ router.delete("/:id", async (req, res) => {
   }
 });
 
-router.get("/:id/posts", async (req, res) => {
+router.get("/:id/comments", async (req, res) => {
   try {
-    const posts = await db.findPostComments(req.params.id);
-    if (posts.length > 0) {
-      res.status(200).json(posts);
+    const postComments = await db.findPostComments(req.params.id);
+    if (postComments.length > 0) {
+      res.status(200).json(postComments);
     } else {
       res.status(404).json({
         ErrorMessage: `There are no posts associated with the id ${id}`
@@ -89,6 +89,35 @@ router.get("/:id/posts", async (req, res) => {
     res.status(500).json({
       message: "Error in retrieving post comments"
     });
+  }
+});
+
+router.get("/comments/:id", async (req, res) => {
+  try {
+    const comments = await db.findCommentById(req.params.id);
+    if (comments.length > 0) {
+      res.status(200).json(comments);
+    } else {
+      res.status(404).json({
+        ErrorMessage: `There are no comments associated with the comment id ${id}`
+      });
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      message: "Error in retrieving comments"
+    });
+  }
+});
+
+router.post("/comments", async (req, res) => {
+  try {
+    console.log(":: WITHIN POST OF INSER COMMENTS::");
+    const comment = await db.insertComment(req.body);
+    res.status(201).json(comment);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ ErrorMessage: "Error adding blog" });
   }
 });
 module.exports = router;

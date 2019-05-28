@@ -10,6 +10,6 @@ server.get("/", (req, res) => {
   res.send("    <h2>Lambda Chat API</h2><p>Welcome to the chat API</p>");
 });
 
-server.use("/api/blogs", databaseRouter);
+server.use("/api/posts", databaseRouter);
 
 module.exports = server;
