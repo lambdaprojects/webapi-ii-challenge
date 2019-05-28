@@ -1,8 +1,5 @@
-const express = require("express");
-const database = require("./data/db");
+const server = require("./server.js");
 
-const server = express();
-server.use(express.json());
 const port = "8000";
 
 server.listen(port, () => {
