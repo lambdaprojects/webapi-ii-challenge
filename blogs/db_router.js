@@ -36,8 +36,17 @@ router.get("/:id", async (req, res) => {
 
 router.post("/", async (req, res) => {
   try {
-    const blog = await db.insert(req.body);
-    res.status(201).json(blog);
+    console.log(":: POST REQUEST BODY ::" + JSON.stringify(req.body));
+    let title = req.body.title;
+    let content = req.body.content;
+    if (!title || !body) {
+      res.status(400).json({
+        ErrorMesage: "Please provide title and contents for the post"
+      });
+    } else {
+      const blog = await db.insert(req.body);
+      res.status(201).json(blog);
+    }
   } catch (error) {
     console.log(error);
     res.status(500).json({ ErrorMessage: "Error adding blog" });
