@@ -44,4 +44,17 @@ router.post("/", async (req, res) => {
   }
 });
 
+router.put("/:id", async (req, res) => {
+  try {
+    const blog = await db.update(req.params.id, req.body);
+    if (blog) {
+      res.status(200).json(blog);
+    } else {
+      res.status(404).json({ ErrorMessage: "The blog is not available" });
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ ErrorMessage: "Error in updation" });
+  }
+});
 module.exports = router;
