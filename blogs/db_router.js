@@ -49,12 +49,9 @@ router.post("/", async (req, res) => {
     }
   } catch (error) {
     console.log(error);
-    res
-      .status(500)
-      .json({
-        ErrorMessage:
-          "There was an error while saving the posts to the database"
-      });
+    res.status(500).json({
+      ErrorMessage: "There was an error while saving the posts to the database"
+    });
   }
 });
 
@@ -124,11 +121,24 @@ router.get("/comments/:id", async (req, res) => {
   }
 });
 
-router.post("/comments", async (req, res) => {
+router.post("/:id/comments", async (req, res) => {
   try {
-    console.log(":: WITHIN POST OF INSER COMMENTS::");
-    const comment = await db.insertComment(req.body);
-    res.status(201).json(comment);
+    const post = await db.findById(req.params.id);
+    if (post.length === 1) {
+      console.log(":: WITHIN POST OF INSERT COMMENTS::");
+      if (req.body.text) {
+        const comment = await db.insertComment(req.body);
+        res.status(201).json(comment);
+      } else {
+        res
+          .status(400)
+          .json({ ErrorMessage: "Please provide text for the comment" });
+      }
+    } else {
+      res.status(404).json({
+        ErrorMessage: `The post with the specified ${id} does not exist`
+      });
+    }
   } catch (error) {
     console.log(error);
     res.status(500).json({ ErrorMessage: "Error adding blog" });
