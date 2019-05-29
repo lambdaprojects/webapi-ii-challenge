@@ -123,21 +123,30 @@ router.get("/comments/:id", async (req, res) => {
 
 router.post("/:id/comments", async (req, res) => {
   try {
-    const post = await db.findById(req.params.id);
-    if (post.length === 1) {
-      console.log(":: WITHIN POST OF INSERT COMMENTS::");
-      if (req.body.text) {
-        const comment = await db.insertComment(req.body);
-        res.status(201).json(comment);
+    if (req.params.id === req.body.post_id) {
+      const post = await db.findById(req.params.id);
+      if (post.length === 1) {
+        console.log(":: WITHIN POST OF INSERT COMMENTS::");
+        if (req.body.text) {
+          const comment = await db.insertComment(req.body);
+          res.status(201).json(comment);
+        } else {
+          res
+            .status(400)
+            .json({ ErrorMessage: "Please provide text for the comment" });
+        }
       } else {
-        res
-          .status(400)
-          .json({ ErrorMessage: "Please provide text for the comment" });
+        res.status(404).json({
+          ErrorMessage: `The post with the specified ${id} does not exist`
+        });
       }
     } else {
-      res.status(404).json({
-        ErrorMessage: `The post with the specified ${id} does not exist`
-      });
+      res
+        .status(404)
+        .json({
+          ErrorMessage:
+            "The post id in request parameter and comment object should be the same."
+        });
     }
   } catch (error) {
     console.log(error);
