@@ -14,30 +14,7 @@ class App extends React.Component {
     this.props.getPosts();
   }
 
-  // componentDidUpdate() {
-  //   console.log(":: COMPONENT DID UPDATE ::");
-  //   if (!this.props.fetchingPosts) {
-  //     this.setState({ ...this.state, formPosts: this.props.posts });
-  //   }
-  // }
   render() {
-    // if (this.props.fetchingPosts) {
-    //   return <div>Loading....</div>;
-    // }
-    // let isRender;
-    // if (
-    //   this.state.posts === undefined ||
-    //   this.state.posts === null ||
-    //   (Object.entries(this.state.posts).length === 0 &&
-    //     this.state.posts.constructor === Object)
-    // ) {
-    //   isRender = false;
-    //   console.log(":: THE VALUE OF IS RENDER IS ::" + isRender);
-    //   return <div>Loading .... </div>;
-    // } else {
-    //   isRender = true;
-    //   console.log(":: THE VALUE OF IS RENDER IS ::" + isRender);
-    // }
     return (
       <div className="App">
         <h1> List of blog posts!</h1>
