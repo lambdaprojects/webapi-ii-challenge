@@ -13,7 +13,7 @@ router.get("/", async (req, res) => {
     // log error to database
     console.log(error);
     res.status(500).json({
-      message: "Error retrieving the blogs"
+      ErrorMessage: "The posts information could not be retrieved."
     });
   }
 });
@@ -24,12 +24,14 @@ router.get("/:id", async (req, res) => {
     if (blog.length > 0) {
       res.status(200).json(blog);
     } else {
-      res.status(404).json({ message: "Blog not found" });
+      res.status(404).json({
+        ErrorMessage: `The post with the specified id ${id} does not exist.`
+      });
     }
   } catch (error) {
     console.log(error);
     res.status(500).json({
-      message: "Error retrieving the blog"
+      ErrorMessage: "The post information could not be retrieved."
     });
   }
 });
@@ -39,9 +41,9 @@ router.post("/", async (req, res) => {
     console.log(":: POST REQUEST BODY ::" + JSON.stringify(req.body));
     let title = req.body.title;
     let content = req.body.content;
-    if (!title || !body) {
+    if (!title || !content) {
       res.status(400).json({
-        ErrorMesage: "Please provide title and contents for the post"
+        ErrorMessage: "Please provide title and contents for the post"
       });
     } else {
       const blog = await db.insert(req.body);
@@ -57,15 +59,25 @@ router.post("/", async (req, res) => {
 
 router.put("/:id", async (req, res) => {
   try {
-    const blog = await db.update(req.params.id, req.body);
-    if (blog) {
-      res.status(200).json(blog);
+    let title = req.body.title;
+    let content = req.body.content;
+    if (!title || !content) {
+      const blog = await db.update(req.params.id, req.body);
+      if (blog) {
+        res.status(200).json(blog);
+      } else {
+        res.status(404).json({
+          ErrorMessage: `The post with the speficied id ${id} does not exist.`
+        });
+      }
     } else {
-      res.status(404).json({ ErrorMessage: "The blog is not available" });
+      res.status(400).json({
+        ErrorMessage: `Please provide title and contents for the post.`
+      });
     }
   } catch (error) {
     console.log(error);
-    res.status(500).json({ ErrorMessage: "Error in updation" });
+    res.status(500).json({ ErrorMessage: "Error in updation." });
   }
 });
 
@@ -73,14 +85,16 @@ router.delete("/:id", async (req, res) => {
   try {
     const count = await db.remove(req.params.id);
     if (count > 0) {
-      res.status(200).json({ SuccessMessage: "The blog is deleted" });
+      res.status(200).json({ SuccessMessage: "The blog is deleted." });
     } else {
-      res.status(404).json({ message: "The blog cannot be deleted" });
+      res.status(404).json({
+        ErrorMessage: `The post with the specified id ${id} does not exist.`
+      });
     }
   } catch (error) {
     console.log(error);
     res.status(500).json({
-      message: "Error removing the blog"
+      ErrorMessage: "The post could not be removed."
     });
   }
 });
@@ -92,13 +106,13 @@ router.get("/:id/comments", async (req, res) => {
       res.status(200).json(postComments);
     } else {
       res.status(404).json({
-        ErrorMessage: `There are no posts associated with the id ${id}`
+        ErrorMessage: `The post with the specified ${id} does not exist. `
       });
     }
   } catch (error) {
     console.log(error);
     res.status(500).json({
-      message: "Error in retrieving post comments"
+      ErrorMessage: "The comments information could not be retrieved."
     });
   }
 });
@@ -110,13 +124,13 @@ router.get("/comments/:id", async (req, res) => {
       res.status(200).json(comments);
     } else {
       res.status(404).json({
-        ErrorMessage: `There are no comments associated with the comment id ${id}`
+        ErrorMessage: `There are no comments associated with the comment id ${id}.`
       });
     }
   } catch (error) {
     console.log(error);
     res.status(500).json({
-      message: "Error in retrieving comments"
+      ErrorMessage: "Error in retrieving comments."
     });
   }
 });
@@ -133,24 +147,22 @@ router.post("/:id/comments", async (req, res) => {
         } else {
           res
             .status(400)
-            .json({ ErrorMessage: "Please provide text for the comment" });
+            .json({ ErrorMessage: "Please provide text for the comment." });
         }
       } else {
         res.status(404).json({
-          ErrorMessage: `The post with the specified ${id} does not exist`
+          ErrorMessage: `The post with the specified ${id} does not exist.`
         });
       }
     } else {
-      res
-        .status(404)
-        .json({
-          ErrorMessage:
-            "The post id in request parameter and comment object should be the same."
-        });
+      res.status(404).json({
+        ErrorMessage:
+          "The post id in request parameter and comment object should be the same."
+      });
     }
   } catch (error) {
     console.log(error);
-    res.status(500).json({ ErrorMessage: "Error adding blog" });
+    res.status(500).json({ ErrorMessage: "Error adding blog." });
   }
 });
 module.exports = router;
